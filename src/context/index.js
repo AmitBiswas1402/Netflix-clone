@@ -9,7 +9,7 @@ export const GlobalContext = createContext(null);
 export default function GlobalState({ children }) {
   const [loggedInAccount, setLoggedInAccount] = useState(null);
   const [accounts, setAccounts] = useState([]);
-  const [pageLoader, setPageLoader] = useState(true)
+  const [pageLoader, setPageLoader] = useState(true);
 
   const { data: session } = useSession();
 
@@ -17,7 +17,14 @@ export default function GlobalState({ children }) {
 
   return (
     <GlobalContext.Provider
-      value={{ loggedInAccount, setLoggedInAccount, accounts, setAccounts, pageLoader, setPageLoader }}
+      value={{
+        loggedInAccount,
+        setLoggedInAccount,
+        accounts,
+        setAccounts,
+        pageLoader,
+        setPageLoader,
+      }}
     >
       {children}
     </GlobalContext.Provider>
