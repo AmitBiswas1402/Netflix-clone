@@ -4,11 +4,18 @@ import { GlobalContext } from "@/context";
 import { useSession } from "next-auth/react";
 import { useContext, useEffect, useState } from "react";
 import CircleLoader from "../circle-loader";
+import AccountForm from "./account-form";
+
+const initialFormData = {
+  name: "",
+  pin: "",
+};
 
 export default function ManageAccounts() {
   const { accounts, setAccounts, pageLoader, setPageLoader } =
     useContext(GlobalContext);
   const [showAccountForm, setShowAccountForm] = useState(false);
+  const [formData, setFormData] = useState(initialFormData);
   const { data: session } = useSession();
 
   async function getAllAccounts() {
@@ -33,6 +40,23 @@ export default function ManageAccounts() {
   useEffect(() => {
     getAllAccounts();
   }, []);
+
+  async function handleSave() {
+    const res = await fetch("/api/account/create-account", {
+      method: "POST",
+      headers: {
+        "Content-Typo": "application/json",
+      },
+      body: JSON.stringify({
+        ...formData,
+        uid: session?.user?.uid
+      }),
+    });
+
+    const data = await res.json();
+
+    console.log(data, 'datadata');
+  }
 
   if (!pageLoader) return <CircleLoader />;
 
@@ -79,12 +103,21 @@ export default function ManageAccounts() {
             : null}
 
           {accounts && accounts.length < 4 ? (
-            <li onClick={()=> setShowAccountForm(!showAccountForm)} className="border text-black bg-[#e5b109] font-bold text-lg border-black max-w-[200px] rounded min-w-[84px] max-h-[200px] min-h-[84px] w-[155px] h-[155px] cursor-pointer flex justify-center items-center">
+            <li
+              onClick={() => setShowAccountForm(!showAccountForm)}
+              className="border text-black bg-[#e5b109] font-bold text-lg border-black max-w-[200px] rounded min-w-[84px] max-h-[200px] min-h-[84px] w-[155px] h-[155px] cursor-pointer flex justify-center items-center"
+            >
               Add Account
             </li>
           ) : null}
         </ul>
       </div>
+      <AccountForm
+        handleSave={handleSave}
+        formData={formData}
+        setFormData={setFormData}
+        showAccountForm={showAccountForm}
+      />
     </div>
   );
 }
