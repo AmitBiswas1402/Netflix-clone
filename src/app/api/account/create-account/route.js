@@ -1,8 +1,9 @@
 import connectToDB from "@/database";
 import Account from "@/models/Account";
+import { hash } from "bcryptjs";
 import { NextResponse } from "next/server";
 
-export const dynamaic = "force-dynamic";
+export const dynamic = "force-dynamic";
 
 export async function POST(req) {
   try {
@@ -13,7 +14,6 @@ export async function POST(req) {
     const isAccountAlreadyExists = await Account.find({ uid, name });
     console.log(isAccountAlreadyExists);
     const allAccounts = await Account.find({});
-
     if (isAccountAlreadyExists && isAccountAlreadyExists.length > 0) {
       return NextResponse.json({
         success: false,
@@ -24,7 +24,7 @@ export async function POST(req) {
     if (allAccounts && allAccounts.length === 4) {
       return NextResponse.json({
         success: false,
-        message: "You can only add 4 accounts maximum",
+        message: "You can only add max 4 accounts",
       });
     }
 
@@ -44,13 +44,14 @@ export async function POST(req) {
     } else {
       return NextResponse.json({
         success: false,
-        message: "Something went wrong",
+        message: "Something Went wrong",
       });
     }
   } catch (e) {
+    console.log(e);
     return NextResponse.json({
       success: false,
-      message: "Something went wrong",
+      message: "Something Went wrong",
     });
   }
 }
