@@ -66,7 +66,7 @@ export default function ManageAccounts() {
     console.log(data, "datadata");
   }
 
-  if (!pageLoader) return <CircleLoader />;
+  if (pageLoader) return <CircleLoader />;
 
   return (
     <div className="min-h-screen flex justify-center flex-col items-center relative">

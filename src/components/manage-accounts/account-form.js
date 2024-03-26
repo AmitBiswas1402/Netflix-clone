@@ -40,6 +40,7 @@ export default function AccountForm({
                   [e.target.name]: e.target.value,
                 })
               }
+              maxLength={4}
               placeholder="Enter your PIN"
               className="px-5 py-3 rounded-lg placeholder:text-red-700 text-lg text-[#e5b109] outline-none focus:outline-none"
             />
