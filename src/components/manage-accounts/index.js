@@ -6,6 +6,8 @@ import { useContext, useEffect, useState } from "react";
 import CircleLoader from "../circle-loader";
 import AccountForm from "./account-form";
 import { TrashIcon } from "@heroicons/react/24/outline";
+import PinContainer from "./pin-container";
+import { usePathname, useRouter } from "next/navigation";
 
 const initialFormData = {
   name: "",
@@ -13,12 +15,25 @@ const initialFormData = {
 };
 
 export default function ManageAccounts() {
-  const { accounts, setAccounts, pageLoader, setPageLoader } =
-    useContext(GlobalContext);
+  const {
+    accounts,
+    setAccounts,
+    pageLoader,
+    setPageLoader,
+    setLoggedInAccount,
+  } = useContext(GlobalContext);
   const [showAccountForm, setShowAccountForm] = useState(false);
   const [formData, setFormData] = useState(initialFormData);
   const [showDeleteIcon, setShowDeleteIcon] = useState(false);
+  const [pin, setPin] = useState("");
+  const [pinError, setPinError] = useState(false);
+  const [showPinContainer, setShowPinContainer] = useState({
+    show: false,
+    account: null,
+  });
   const { data: session } = useSession();
+  const pathname = usePathname();
+  const router = useRouter();
 
   async function getAllAccounts() {
     const res = await fetch(
@@ -81,6 +96,36 @@ export default function ManageAccounts() {
     }
   }
 
+  async function handlePinSubmit(value, index) {
+    const response = await fetch("/api/account/login-to-account", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        uid: session?.user?.uid,
+        accountId: showPinContainer.account._id,
+        pin: value,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      setLoggedInAccount(showPinContainer.account);
+      sessionStorage.setItem(
+        "loggedInAccount",
+        JSON.stringify(showPinContainer.account)
+      );
+      router.push(pathname);
+      setPageLoader(false);
+    } else {
+      setPageLoader(false);
+      setPinError(true);
+      setPin("");
+    }
+  }
+
   console.log(accounts, "accounts");
 
   if (pageLoader) return <CircleLoader />;
@@ -97,6 +142,11 @@ export default function ManageAccounts() {
                 <li
                   className="max-w-[200px] min-w-[155px] w-[155px] cursor-pointer flex flex-col items-center gap-3"
                   key={item._id}
+                  onClick={
+                    showDeleteIcon
+                      ? null
+                      : () => setShowPinContainer({ show: true, account: item })
+                  }
                 >
                   <div className="relative">
                     <img
@@ -153,6 +203,15 @@ export default function ManageAccounts() {
           </span>
         </div>
       </div>
+      <PinContainer
+        pin={pin}
+        setPin={setPin}
+        pinError={pinError}
+        setPinError={setPinError}
+        showPinContainer={showPinContainer.show}
+        setShowPinContainer={setShowPinContainer}
+        handlePinSubmit={handlePinSubmit}
+      />
       <AccountForm
         handleSave={handleSave}
         formData={formData}
