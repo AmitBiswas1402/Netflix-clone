@@ -111,7 +111,7 @@ export default function ManageAccounts() {
 
     const data = await response.json();
 
-    if (data.success) {
+    if (!data.success) {
       setLoggedInAccount(showPinContainer.account);
       sessionStorage.setItem(
         "loggedInAccount",
