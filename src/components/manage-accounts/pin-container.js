@@ -6,7 +6,7 @@ export default function PinContainer({
   showPinContainer,
   pinError,
   setShowPinContainer,
-  handelePinSubmit,
+  handlePinSubmit,
   setPinError,
   pin,
   setPin,
@@ -73,7 +73,7 @@ export default function PinContainer({
             fontSize: "40px",
           }}
           inputFocusStyle={{ borderColor: "white" }}
-          onComplete={(value, index) => handelePinSubmit(value, index)}
+          onComplete={(value, index) => handlePinSubmit(value, index)}
           autoSelect={true}
         />
       </div>

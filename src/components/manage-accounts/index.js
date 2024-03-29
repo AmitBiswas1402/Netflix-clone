@@ -122,7 +122,7 @@ export default function ManageAccounts() {
     } else {
       setPageLoader(false);
       setPinError(true);
-      setPin("");
+      setPin('');
     }
   }
 
