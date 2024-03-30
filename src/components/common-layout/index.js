@@ -1,5 +1,25 @@
-'use client'
+"use client";
+
+import { motion } from "framer-motion";
+import Head from "next/head";
+import NavBar from "../navbar";
 
 export default function CommonLayout() {
-    return <div>Common layout</div>
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true }}
+    >
+        <Head>
+            <title>Netflix Clone</title>
+        </Head>
+        <>
+        <NavBar />
+        <div className="relative pl-4 pb-24 lg:space-y-24">
+            
+        </div>
+        </>
+    </motion.div>
+  );
 }
